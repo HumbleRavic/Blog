@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--
+    为了更好的适配移动端，设置layout viewport的宽度等于移动端屏幕宽度
+    初始缩放比为1
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>标签新增</title>
+    <script src="../../js/jquery-3.5.1.min.js"></script>
+    <script src="../../Semantic-UI-CSS-master/semantic.min.js"></script>
+    <script src="../../editor/editormd.amd.js"></script>
+    <script src="../../js/allsuit.js"></script>
+    <script src="../../js/tags-input.js"></script>
+    <link rel="stylesheet" href="../../Semantic-UI-CSS-master/semantic.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../editor/css/editormd.css">
+</head>
+<body>
+<!--导航-->
+<nav th:replace="admin/_fragments :: menu(3)" class="ui inverted attached segment m-padded-tb-mini m-small-shadow">
+    <div class="ui container middle aligned">
+        <div class="ui inverted secondary stackable menu">
+            <div class="ui teal header item">管理后台</div>
+            <a href="#" class="item m-mobile-hide togglemenu"><i class="home icon"></i>博客</a>
+            <a href="#" class="item m-mobile-hide togglemenu"><i class="idea icon"></i>分类</a>
+            <a href="#" class="item m-mobile-hide togglemenu"><i class="tags icon"></i>标签</a>
+            <div class="right item m-mobile-hide togglemenu">
+                <!--下拉菜单-->
+                <div class="ui dropdown">
+                    <div class="text">
+                        <img class="ui avatar image" src="../../image/cos1.jpg">Ravic
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="#">注销</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" id="showMenuButton" class="ui button black m-top-right m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+<!--题头-->
+<div th:replace="admin/_fragments :: typehead(1)" class="ui attached segment">
+    <div class="ui container">
+        <div class="ui fluid menu">
+            <div class="ui right pointing menu">
+                <a class="active item">
+                    标签新增
+                </a>
+                <a class="item">
+                    标签管理
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--分类输入-->
+<div class="m-padded-tb-big">
+    <div class="ui container">
+        <!--提交表单-->
+        <form class="ui form" method="post" action="#" th:action="@{/admin/tags}">
+            <!--后端校验失败显示区域-->
+            <div class="ui negative compact message" th:text="${validmessage}" th:unless="${#strings.isEmpty(validmessage)}"></div>
+            <!--新增失败提示-->
+            <div class="ui negative compact message" th:text="${message}" th:unless="${#strings.isEmpty(message)}"></div>
+            <!--新增标签-->
+            <div class="field">
+                <div class="ui left labeled input fluid">
+                    <label class="ui basic teal label">标签</label>
+                    <input type="hidden" name="id" th:value="${tag}?${tag.getId()}:-1" value="-1"/>
+                    <input type="text" name="name" placeholder="标签的名称" th:value="${tag?.getName()}"/>
+                </div>
+            </div>
+            <!--校验错误提示-->
+            <div class="ui error message"></div>
+            <!--返回，提交-->
+            <div class="ui right aligned container">
+                <button type="button" class="ui inverted basic button" onclick="window.history.go(-1)">返回</button>
+                <button type="submit" class="ui teal button">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

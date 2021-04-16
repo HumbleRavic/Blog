@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ravic.blog.mapper.TypeMapper">
+    <insert id="saveType" parameterType="Type">
+        insert into type (name) values (#{name})
+    </insert>
+    <select id="getType" parameterType="Long" resultType="Type">
+        select * from type where id=#{value}
+    </select>
+    <select id="findByPage" parameterType="HashMap" resultType="Type">
+        select * from type limit #{start},#{size}
+    </select>
+    <select id="count" resultType="Long">
+        select count(id) from type
+    </select>
+    <!--注意这里更新where中的id是Type实体对象中的id-->
+    <update id="updateType" parameterType="Type">
+        update type set name=#{name} where id=#{id}
+    </update>
+    <!--与blog表级联删除-->
+    <delete id="deleteType" parameterType="Long">
+        delete from type where id=#{value}
+    </delete>
+    <!--根据type的id在blog表中寻找id,方便级联删除-->
+    <select id="getIdFromBlogFk" parameterType="Long" resultType="Long">
+        select id from blog where typeId=#{value}
+    </select>
+
+    <select id="getNumByTypeName" parameterType="String" resultType="Integer">
+        select count(id) from type where name=#{value}
+    </select>
+    <select id="getAllType" resultType="Type">
+        select * from type
+    </select>
+
+    <!--获取最热门的几个标签的信息,如标签下博客数量-->
+    <!--当入参为-1时则直接获取全局的type-->
+    <select id="listTypeTop" parameterType="Integer" resultType="TypeAndNum">
+        select b.id,b.name,count(*) as num from blog a inner join type b on a.typeId=b.id group by b.id order by num desc <include refid="hasTypeTop"></include>
+    </select>
+    <sql id="hasTypeTop">
+        <if test="_parameter != -1">
+            limit 0,#{value}
+        </if>
+    </sql>
+</mapper>

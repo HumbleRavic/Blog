@@ -1,0 +1,15 @@
+spring:
+  #thymeleaf宽松地识别html页面
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  #多配置环境切换
+  profiles:
+    active: dev
+  #热部署
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+      exclude: WEB-INF/**
+

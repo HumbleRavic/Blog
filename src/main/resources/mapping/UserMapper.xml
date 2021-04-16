@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ravic.blog.mapper.UserMapper">
+    <!--根据用户名和密码在user数据表中获取User对象-->
+    <select id="getUserByUsernameAndPwd" parameterType="HashMap" resultType="User">
+        select * from user where username=#{username} and password=#{password}
+    </select>
+</mapper>

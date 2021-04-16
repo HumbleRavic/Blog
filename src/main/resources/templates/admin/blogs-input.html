@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--
+    为了更好的适配移动端，设置layout viewport的宽度等于移动端屏幕宽度
+    初始缩放比为1
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客管理-发布</title>
+    <script src="../../js/jquery-3.5.1.min.js"></script>
+    <script src="../../Semantic-UI-CSS-master/semantic.min.js"></script>
+    <script src="../../editor/editormd.amd.js"></script>
+    <script src="../../js/allsuit.js"></script>
+    <script src="../../js/blogs-input.js"></script>
+    <link rel="stylesheet" href="../../Semantic-UI-CSS-master/semantic.min.css">
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../editor/css/editormd.css">
+</head>
+<body>
+<!--导航-->
+<nav th:replace="admin/_fragments :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-small-shadow">
+    <div class="ui container middle aligned">
+        <div class="ui inverted secondary stackable menu">
+            <div class="ui teal header item">管理后台</div>
+            <a href="#" class="item m-mobile-hide togglemenu"><i class="home icon"></i>博客</a>
+            <a href="#" class="item m-mobile-hide togglemenu"><i class="idea icon"></i>分类</a>
+            <a href="#" class="item m-mobile-hide togglemenu"><i class="tags icon"></i>标签</a>
+            <div class="right item m-mobile-hide togglemenu">
+                <!--下拉菜单-->
+                <div class="ui dropdown">
+                    <div class="text">
+                        <img class="ui avatar image" src="../../image/cos1.jpg">Ravic
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="#">注销</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" id="showMenuButton" class="ui button black m-top-right m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+<!--题头-->
+<div th:replace="admin/_fragments :: commonhead(1)" class="ui attached segment">
+    <div class="ui container">
+        <div class="ui fluid menu">
+            <div class="ui right pointing menu">
+                <a class="active item">
+                    发布
+                </a>
+                <a class="item">
+                    博客管理
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-padded-tb-big">
+    <div class="ui container">
+        <!--提交表单-->
+        <form id="blog-table" class="ui form" th:object="${blog}" method="post" action="#" th:action="@{/admin/blogs}">
+            <input type="hidden" name="published"/>
+            <!--让后端分辨出是新增博客还是编辑已有的博客-->
+            <input type="hidden" name="id" th:value="*{id}?*{id}:'-1'"/>
+            <!--标题-->
+            <div class="field">
+                <div class="ui left labeled input">
+                    <div class="ui selection compact teal basic dropdown label">
+                        <input type="hidden" name="flag" th:value="*{flag}" >
+                        <i class="dropdown icon"></i>
+                        <div class="default text" th:text="*{flag}==true?'原创':'转载'"></div>
+                        <div class="menu">
+                            <div class="item" data-value="true">原创</div>
+                            <div class="item" data-value="false">转载</div>
+                        </div>
+                    </div>
+                    <input class="ui input" type="text" name="title" placeholder="标题" th:value="*{title}"/>
+                </div>
+            </div>
+            <br/><br/><br/><br/>
+            <!--博客内容-->
+            <div class="field">
+                <div id="md-content">
+                    <textarea name="content" placeholder="博客内容" style="display: none" th:text="*{content}"></textarea>
+                </div>
+            </div>
+            <div class="two fields">
+                <!--分类-->
+                <div class="field">
+                    <div class="ui left labeled input">
+                        <label class="ui basic teal label">分类</label>
+                        <div class="ui fluid selection dropdown">
+                            <input type="hidden" name="typeId" th:value="*{type}?*{type.name}">
+                            <i class="dropdown icon"></i>
+                            <div class="default text"></div>
+                            <div class="menu">
+                                <div class="item" th:each="type,IterStat : ${typeList}" th:data-value="${type.id}" th:text="${type.name}">Test</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--标签-->
+                <div class="field">
+                    <div class="ui left labeled input">
+                        <label class="ui compact basic teal label">标签</label>
+                        <div class="ui fluid multiple search selection dropdown">
+                            <input type="hidden" name="tagIds" value="" th:value="${blogTagString}">
+                            <i class="dropdown icon"></i>
+                            <div class="default text" th:text="*{tagList}">标签</div>
+                            <div class="menu">
+                                <div class="item" th:each="tag : ${tagList}" th:text="${tag.name}" th:attr="data-value=${tag.id}">java</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--首图引用地址-->
+            <div class="field">
+                <div class="ui left labeled input fluid">
+                    <label class="ui basic teal label">首图</label>
+                    <input type="text" name="firstPicture" placeholder="首图引用地址" th:value="*{firstPicture}"/>
+                </div>
+            </div>
+            <div class="field">
+                <textarea name="description" th:text="*{description}" placeholder="博客描述..."></textarea>
+            </div>
+            <!--发布选项-->
+            <div class="fields">
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="recommend" value="true" tabindex="0" class="hidden" th:checked="*{isRecommend()}">
+                        <label style="color: white">推荐</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="shareStatement" value="true" tabindex="1" class="hidden" th:checked="*{isShareStatement()}">
+                        <label style="color: white">转载声明</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="appreciation" value="true" tabindex="2" class="hidden" th:checked="*{isAppreciation()}">
+                        <label style="color: white">打赏</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="commentabled" value="true" tabindex="3" class="hidden" th:checked="*{isCommentabled()}">
+                        <label style="color: white">评论</label>
+                    </div>
+                </div>
+            </div>
+            <!--错误提示-->
+            <div class="ui error message"></div>
+            <!--返回，保存，发布-->
+            <div class="ui right aligned container">
+                <button type="button" class="ui inverted basic button" onclick="window.history.go(-1)">返回</button>
+                <button id="save-btn" type="button" class="ui secondary button">保存</button>
+                <button id="publish-btn" type="button" class="ui teal button">发布</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

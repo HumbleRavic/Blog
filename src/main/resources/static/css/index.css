@@ -1,0 +1,157 @@
+/*html{*/
+/*    height: 100%;*/
+/*}*/
+body{
+    /*background: url("../image/bg_02.png") no-repeat;*/
+    /*background-size: cover;*/
+    background: url("../image/bg_04.png") repeat 0 0;
+}
+.m-padded-tb-massive{
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+}
+
+.m-padded-tb-large{
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+}
+
+.m-padded-tb-big{
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+}
+
+.m-padded-tb-middle{
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+}
+
+.m-padded-tb-tiny{
+    padding-top : 10px !important;
+    padding-bottom: 10px !important;
+}
+
+.m-padded-tb-mini{
+    padding-top : 5px !important;
+    padding-bottom: 5px !important;
+}
+
+.m-padded-tb-min{
+    padding-top : 3px !important;
+    padding-bottom: 3px !important;
+}
+
+.m-padded-responsive-lr{
+    padding-left: 64px !important;
+    padding-right: 64px !important;
+}
+
+.m-padded-tb-around{
+    padding: 50px;
+}
+
+.m-margin-tb-tiny{
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.m-margin-top{
+    margin-top: 50px !important;
+}
+
+.m-margin-top-large{
+    margin-top: 200px !important;
+}
+
+.m-inline-block{
+    display: inline-block !important;
+}
+
+
+.m-container-size{
+    width: 1300px !important;
+}
+.m-container-small-size{
+    width: 1100px !important;
+}
+.m-container-tiny-size{
+    width: 500px !important;
+}
+
+
+/*position*/
+.m-top-right{
+    position: absolute !important;
+    top: 20px !important;
+    right: 10px !important;
+}
+.m-middle-right{
+    z-index: 1;
+    position: fixed !important;
+    bottom: 500px !important;
+    right: 20px !important;
+}
+
+.m-top-right-two{
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+}
+
+/*设置字体*/
+.m-text-thin{
+    font-weight: 300 !important;
+}
+.m-text-spaced{
+    letter-spacing: 1px !important;
+}
+.m-text-lined{
+    line-height: 1.8 !important;
+}
+.m-text{
+    font-weight: 300 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.8 !important;
+}
+.m-text-black{
+    color: #333 !important;
+}
+
+
+.m-opacity-mini{
+    opacity: 0.5 !important;
+}
+
+.m-mobile-show{
+    display: none !important;
+}
+
+/*阴影处理*/
+.m-small-shadow{
+    -webkit-box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+/*在移动端时触发的css样式*/
+@media screen and (max-width: 768px) {
+    .m-mobile-hide{
+        display: none !important;
+    }
+
+    .m-mobile-show{
+        display: block !important;
+    }
+
+    .m-padded-responsive-lr{
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+
+    .m-mobile-wide{
+        width: 100% !important;
+    }
+
+    .m-margin-bottom{
+        margin-bottom: 20px !important;
+    }
+}

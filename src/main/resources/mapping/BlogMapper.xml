@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ravic.blog.mapper.BlogMapper">
+
+    <!--1.分页查询-->
+
+    <!--获取满足复合条件的记录条目数-->
+    <select id="getCountByCondition" parameterType="org.ravic.blog.page.SearchCondition" resultType="Long">
+        select distinct count(*) from blog a <include refid="hasTag_04"></include> <include refid="hasTag_06"></include> <include refid="byCondition"></include>
+    </select>
+    <!--根据复合条件获取页级的博客List-->
+    <select id="findByPage" parameterType="HashMap" resultMap="BlogJoin" >
+        select a.id,a.title,a.content,a.firstPicture,a.flag,a.views,a.appreciation,a.shareStatement,a.commentabled,a.published,a.recommend,a.createTime,a.updateTime,a.description,a.typeId,a.userId,
+        b.id as ItypeId,b.name as ItypeName,e.id as IuserId,e.nickname,e.avatar
+        from blog a inner join type b <include refid="hasTag_04"></include> inner join user e
+        on a.userId=e.id and a.typeId=b.id <include refid="hasTag_05"></include> <include refid="byCondition"></include> order by createTime desc limit #{start},#{size}
+    </select>
+
+    <!--2.根据博客id获取一条blog-->
+
+    <!--根据blog的id判断该博客是否关联标签-->
+    <select id="getCountFromJoinById" parameterType="Long" resultType="Integer">
+        select count(id) from blogjointag where blogId=#{value}
+    </select>
+    <!--从评论表中查找某个blogId在评论表中对应的评论数量-->
+    <select id="getCountFromCommentById" parameterType="Long" resultType="Integer">
+        select count(id) from comment where blogId=#{value}
+    </select>
+    <!--根据id获取,获取到的blog是一个较为完整的blog对象,其中包括tag（如果有的话）包括user 包括type 包括comment（如果有的话）-->
+    <select id="getBlog" parameterType="HashMap" resultMap="BlogJoinTagType">
+        select a.id,a.title,a.content,a.firstPicture,a.flag,a.views,a.appreciation,a.shareStatement,
+        a.commentabled,a.published,a.recommend,a.createTime,a.updateTime,a.description,a.typeId,a.userId,b.id as ItypeId,b.name as ItypeName,f.id as IuserId,f.nickname,f.avatar <include refid="hasTag_01"></include><include refid="hasComment_01"></include> from blog a inner join type b inner join user f
+        <include refid="hasTag_02"></include> <include refid="hasComment_02"></include> on a.typeId=b.id and a.userId=f.id <include refid="hasTag_03"></include> <include refid="hasComment_03"></include> where a.id=#{id}
+    </select>
+
+    <!--3.存储博客,并且前端还发过来了博客关联的tagIds数组-->
+
+    <!--向数据表中插入一条博客,并且在为Blog的id属性赋上新增是数据主键值-->
+    <insert id="saveBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="id">
+        insert into blog (title,content,firstPicture,flag,views,appreciation,shareStatement,commentabled,
+published,recommend,createTime,updateTime,description,typeId,userId) values (
+#{title},#{content},#{firstPicture},#{flag},#{views},#{appreciation},#{shareStatement},#{commentabled},
+#{published},#{recommend},#{createTime},#{updateTime},#{description},#{typeId},#{userId})
+    </insert>
+
+
+    <!--4.更新已有的博客-->
+
+    <!--将数据表中的某一行博客修改成输入参数Blog对象的样子,不能直接去修改view浏览次数-->
+    <!--可以更新updateTime不能更新createTime-->
+    <update id="updateBlog" parameterType="Blog">
+        update blog set title=#{title},content=#{content},firstPicture=#{firstPicture},flag=#{flag},appreciation=#{appreciation},shareStatement=#{shareStatement},commentabled=#{commentabled},
+published=#{published},recommend=#{recommend},updateTime=#{updateTime},description=#{description},typeId=#{typeId},userId=#{userId}
+where id=#{id}
+    </update>
+    <!--根据blogId在blogjointag中删除记录-->
+    <delete id="deleteJoinByBlogId" parameterType="Long">
+        delete from blogjointag where blogId=#{value}
+    </delete>
+    <!--依据blog的id和tag的id向blogjointag中添加数据-->
+    <insert id="saveBlogJoinTag" parameterType="HashMap">
+        insert into blogjointag (blogId,tagId) values (#{blogId},#{tagId})
+    </insert>
+
+    <!--5.删除博客-->
+
+    <!--根据blog的id判断该博客是否关联标签-->
+    <!--从评论表中查找某个blogId在评论表中对应的评论数量-->
+    <!--需要级联删除blogjointag,comment-->
+    <delete id="deleteBlog" parameterType="Long">
+        delete from blog where id=#{value}
+    </delete>
+    <delete id="deleteFkById" parameterType="Long">
+        delete from blogjointag where blogId=#{value}
+    </delete>
+    <delete id="deleteCommentByBlogId" parameterType="Long">
+        delete from comment where blogId=#{value}
+    </delete>
+
+    <!--6.获取size个数据库中最新的推荐博客-->
+
+    <!--获取博客名即可-->
+    <!--因为是向首页推荐,所以必须已经发表-->
+    <select id="listBlogTop" parameterType="Integer" resultType="Blog">
+        select id,title from blog where recommend=1 and published=1 order by updateTime desc limit 0,#{value}
+    </select>
+
+    <!--7.根据blog的id获取blog内容转换后的blog对象,为该blog的views做+1-->
+
+    <!--给指定的blog的view+1-->
+    <update id="updateViewsById" parameterType="Long">
+        update blog set views=views+1 where id=#{value}
+    </update>
+
+    <!--8.获取blog表中所有处于发表状态的博客,并将这些博客根据发表的年和月进行排布-->
+
+    <!--获取blog表中所有处于发表状态的博客,并且按照日期降序输出-->
+    <select id="getAllPublishedBlog" resultType="Blog">
+        select * from blog where published=1 order by createTime desc
+    </select>
+
+    <!--SQL拼接片段-->
+
+    <sql id="hasTag_01">
+        <if test="countTag != 0">
+            ,d.id as ItagId,d.name as ItagName
+        </if>
+    </sql>
+    <sql id="hasTag_02">
+        <if test="countTag != 0">
+            inner join blogjointag c inner join tag d
+        </if>
+    </sql>
+    <sql id="hasTag_03">
+        <if test="countTag != 0">
+            and a.id=c.blogId and d.id=c.tagId
+        </if>
+    </sql>
+    <!--当复合查询有tag作为筛选条件时-->
+    <sql id="hasTag_04">
+        <if test="tagId != null">
+            inner join blogjointag c inner join tag d
+        </if>
+    </sql>
+    <sql id="hasTag_05">
+        <if test="tagId != null">
+            and a.id=c.blogId and d.id=c.tagId
+        </if>
+    </sql>
+    <sql id="hasTag_06">
+        <if test="tagId != null">
+            on a.id=c.blogId and d.id=c.tagId
+        </if>
+    </sql>
+    <sql id="hasComment_01">
+        <if test="countComment != 0">
+            ,e.id as IcommentId,e.nickname as IcommentNickname,e.email as IcommentEmail,e.content as IcommnetContent,e.avatar as IcommentAvatar,e.createTime as IcommentCreateTime,e.cid as IcommentCid
+        </if>
+    </sql>
+    <sql id="hasComment_02">
+        <if test="countComment != 0">
+            inner join comment e
+        </if>
+    </sql>
+    <sql id="hasComment_03">
+        <if test="countComment != 0">
+            and a.id=e.blogId
+        </if>
+    </sql>
+    <!--根据复合搜索条件查询的where部分-->
+    <sql id="byCondition">
+        <where>
+            <if test="title!=null and title!=''">
+                and title=#{title}
+            </if>
+            <if test="likeTitle!=null">
+                and title like "%"#{likeTitle}"%"
+            </if>
+            <if test="typeId!=null and typeId!=''">
+                and typeId=#{typeId}
+            </if>
+            <if test="recommend!=null">
+                and recommend=#{recommend}
+            </if>
+            <if test="tagId!=null">
+                and tagId=#{tagId}
+            </if>
+            <if test="published!=null">
+                and published=#{published}
+            </if>
+        </where>
+    </sql>
+
+    <!--resultMap-->
+
+    <resultMap id="BlogJoinTagType" type="Blog">
+        <id property="id" column="id"></id>
+        <association property="type" resultMap="typeIn"></association>
+        <association property="user" resultMap="userIn"></association>
+        <collection property="tagList" ofType="Tag">
+            <result property="id" column="ItagId"/>
+            <result property="name" column="ItagName"/>
+        </collection>
+        <collection property="commentList" ofType="Comment">
+            <result property="id" column="IcommentId"/>
+            <result property="nickname" column="IcommentNickname"></result>
+            <result property="email" column="IcommentEmail"></result>
+            <result property="content" column="IcommentContent"></result>
+            <result property="avatar" column="IcommentAvatar"></result>
+            <result property="createTime" column="IcommentCreateTime"></result>
+            <result property="cid" column="IcommentCid"></result>
+        </collection>
+    </resultMap>
+    <!--关联查询的Type对象-->
+    <resultMap id="typeIn" type="Type">
+        <id property="id" column="ItypeId"></id>
+        <result property="name" column="ItypeName"></result>
+    </resultMap>
+    <!--关联查询的User对象-->
+    <resultMap id="userIn" type="User">
+        <id property="id" column="IuserId"></id>
+    </resultMap>
+    <!--关联查询的Blog对象-->
+    <resultMap id="BlogJoin" type="Blog">
+        <id property="id" column="id"></id>
+        <association property="type" resultMap="typeIn"></association>
+        <association property="user" resultMap="userIn"></association>
+    </resultMap>
+</mapper>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--导航-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-small-shadow">
+    <div class="ui container middle aligned">
+        <div class="ui inverted secondary stackable menu">
+            <div class="ui teal header item">
+                <a th:href="@{/admin/blogs}" style="color: teal;font-size: 30px">管理后台</a>
+            </div>
+            <!--设置导航各个页面的url请求路径-->
+            <a href="#" th:href="@{/admin/blogs}" class="item m-mobile-hide togglemenu" th:classappend="${n==1} ? 'active'"><i class="home icon"></i>博客</a>
+            <a href="#" th:href="@{/admin/types}" class="item m-mobile-hide togglemenu" th:classappend="${n==2} ? 'active'"><i class="idea icon"></i>分类</a>
+            <a href="#" th:href="@{/admin/tags}" class="item m-mobile-hide togglemenu" th:classappend="${n==3} ? 'active'"><i class="tags icon"></i>标签</a>
+            <div class="right item m-mobile-hide togglemenu">
+                <!--下拉菜单-->
+                <div class="ui dropdown">
+                    <div class="text">
+                        <img class="ui avatar image" src="" th:text="${session.user.nickname}" th:src="${session.user.avatar}">
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="#" th:href="@{/admin/logout}">注销</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" id="showMenuButton" class="ui button black m-top-right m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+<!--博客题头-->
+<div th:fragment="commonhead(m)">
+    <div class="ui container" style="margin-top: 30px!important;">
+        <div class="ui fluid menu">
+            <div class="ui right pointing menu">
+                <a class="item" th:href="@{/admin/blogs/add}" th:classappend="${m==1} ? 'active'">
+                    发布
+                </a>
+                <a class="item" th:href="@{/admin/blogs}" th:classappend="${m==2} ? 'active'">
+                    博客管理
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--分类题头-->
+<div th:fragment="typehead(n)">
+    <div class="ui container"  style="margin-top: 30px!important;">
+        <div class="ui menu">
+            <div class="ui right pointing menu">
+                <a href="#" th:href="@{/admin/types/input}" class="item" th:classappend="${n==1} ? 'active'">
+                    分类新增
+                </a>
+                <a href="#" th:href="@{/admin/types}" class="item" th:classappend="${n==2} ? 'active'">
+                    分类管理
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--标签题头-->
+<div th:fragment="taghead(n)">
+    <div class="ui container" style="margin-top: 30px!important;">
+        <div class="ui menu">
+            <div class="ui right pointing menu">
+                <a href="#" th:href="@{/admin/tags/input}" class="item" th:classappend="${n==1} ? 'active'">
+                    标签新增
+                </a>
+                <a href="#" th:href="@{/admin/tags}" class="item" th:classappend="${n==2} ? 'active'">
+                    标签管理
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--底部内容-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive">
+    <div class="ui center aligned container">
+        <div class="ui inverted stackable divided grid">
+            <div class="three wide column">
+                <div class="ui link list">
+                    <div class="item">
+                        <img class="ui rounded image" src="../image/mypic.jpg" style="width: 100px">
+                    </div>
+                </div>
+            </div>
+            <div class="three wide inverted column">
+                <h4 class="ui inverted header">最新博客</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item">用户故事</a>
+                    <a href="#" class="item">用户故事</a>
+                    <a href="#" class="item">用户故事</a>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header">联系我</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item"></a>
+                    <a href="#" class="item"></a>
+                </div>
+            </div>
+            <div class="seven wide column">
+                <h4 class="ui inverted header">介绍</h4>
+                <p class="m-text-spaced m-text-thin m-opacity-mini">测试测试测试测试测试测试测试测试测试测试测试</p>
+            </div>
+        </div>
+    </div>
+    <div class="ui section divider"></div>
+    <div class="ui center aligned container">
+        <p class="m-text-spaced m-text-thin m-opacity-mini m-opacity-mini">赣ICP备20004408号-1</p>
+    </div>
+</footer>
+<!--Ajax请求后端校验失败返回的片段-->
+<div th:fragment="validmessage" class="ui negative message"  th:text="${message}" th:unless="${#strings.isEmpty(message)}"></div>
+</body>
+</html>

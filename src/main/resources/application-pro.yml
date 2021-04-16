@@ -1,0 +1,37 @@
+#配置生产环境
+spring:
+  #配置数据源
+  datasource:
+    driver-class-name:
+    url:
+    username:
+    password:
+
+#配置MyBatis
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: org.ravic.blog.entity
+  type-handlers-package: org.ravic.blog.typeHandler
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#配置日志
+logging:
+  level:
+    root: warn
+    com.ravic.blog: info
+  file:
+    #日志的输出路径
+    name:
+
+#指定端口号
+server:
+  port: 8080
+
+#配置一些特定不变动的资源路径
+sourceconfig:
+  weChatPay: ../image/wechatpay.jpg
+  aliPay: ../image/alipay.jpg
+  weChatQr: ../image/wechatqr.jpg

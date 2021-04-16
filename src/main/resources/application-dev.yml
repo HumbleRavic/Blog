@@ -1,0 +1,41 @@
+#开发环境配置
+spring:
+  #配置数据源
+  datasource:
+    driver-class-name:
+    url:
+    username:
+    password:
+
+#配置MyBatis
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: org.ravic.blog.entity
+  type-handlers-package: org.ravic.blog.typeHandler
+  configuration:
+    #数据库字段和实体类字段宽松适配
+    map-underscore-to-camel-case: true
+    #设置映射等级,我喜欢调到最高,虽然会有字段冲突的风险,不过尽量避免
+    auto-mapping-behavior: full
+    #下面这句话要加,不加Mybatis SQL输出不打印
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+#配置日志
+logging:
+  level:
+    root: info
+    com.ravic.blog: debug
+  file:
+    name:
+
+#配置一些特定不变动的资源路径
+sourceconfig:
+  weChatPay: ../image/
+  aliPay: ../image/
+  weChatQr: ../image/
+
+
+
+server:
+  port: 8080
