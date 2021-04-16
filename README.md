@@ -52,6 +52,7 @@ user表存放的管理员用户信息的password使用了MD5加密，所以需�
 
 ```xml
 <dependency>
+        <dependency>
             <groupId>org.commonmark</groupId>
             <artifactId>body</artifactId>
             <version>0.17.1</version>
