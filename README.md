@@ -66,6 +66,7 @@ user表存放的管理员用户信息的password使用了MD5加密，所以需�
             <artifactId>heading</artifactId>
             <version>0.15.2</version>
         </dependency>
+</dependency>
 ```
 这三个依赖由于中央Maven仓库无法获取，所以我下了jar包，将这3个Maven放到了我的本地仓库。
 所以你们想要使用想去下载jar然后按照我的步骤操作：
